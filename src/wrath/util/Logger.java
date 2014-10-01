@@ -32,7 +32,9 @@ import java.util.Calendar;
  */
 public class Logger 
 {
-    private static final Logger errLogger = new Logger("ERROR", true, true);
+    private static final Logger errLogger = new Logger("error", true, true);
+    private static final DateFormat format = new SimpleDateFormat("[MM/dd/yyyy][HH:mm:ss]");
+    private static final Calendar now = Calendar.getInstance();
     
     /**
      * Gets the standard output stream/logging object to report errors to console and file.
@@ -103,9 +105,7 @@ public class Logger
         if(closed) return;
         if(!verboseToConsole && !writeToFile) return;
         
-        DateFormat f = new SimpleDateFormat("[MM/dd/yyyy][HH:mm:ss]");
-        Calendar now = Calendar.getInstance();
-        String prnt = f.format(now.getTime()) + " " + message;
+        String prnt = format.format(now.getTime()) + " " + message;
         if(verboseToConsole) System.out.println("[" + loggerName.toUpperCase() + "] " + prnt);
         
         if(writeToFile)

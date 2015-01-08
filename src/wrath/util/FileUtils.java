@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library  
- *  Copyright (C) 2014  Dark Paradox Games
+ *  Copyright (C) 2014  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * Standard library to easily handle common file operations.
- * @author Epictaco
+ * @author Trent Spears
  */
 public class FileUtils
 {   
@@ -79,7 +79,7 @@ public class FileUtils
                 }
                 catch (IOException ex)
                 {
-                    Logger.getErrorLogger().write("Could not create new file to archive '" + file.getName() + "'!");
+                    Logger.getErrorLogger().log("Could not create new file to archive '" + file.getName() + "'!");
                     return;
                 }
             }
@@ -92,7 +92,7 @@ public class FileUtils
             }
             catch (FileNotFoundException ex)
             {
-                Logger.getErrorLogger().write("Could not find pre-made file '" + archiveName + "' Prehaps an unknown I/O Error occured?!");
+                Logger.getErrorLogger().log("Could not find pre-made file '" + archiveName + "' Prehaps an unknown I/O Error occured?!");
                 return;
             }
         
@@ -118,7 +118,7 @@ public class FileUtils
             }
             catch (IOException ex)
             {
-                Logger.getErrorLogger().write("Could not put next entry while compressing archive '" + archiveName + "'!");
+                Logger.getErrorLogger().log("Could not put next entry while compressing archive '" + archiveName + "'!");
             }
         });
         
@@ -146,7 +146,7 @@ public class FileUtils
                 }
                 catch(IOException e)
                 {
-                    Logger.getErrorLogger().write("Could not create new archive '" + archiveName + "' for compression!");
+                    Logger.getErrorLogger().log("Could not create new archive '" + archiveName + "' for compression!");
                     return;
                 }
             }
@@ -158,7 +158,7 @@ public class FileUtils
             }
             catch (FileNotFoundException ex)
             {
-                Logger.getErrorLogger().write("Could not find pre-made file '" + archiveName + "' Prehaps an unknown I/O Error occured?!");
+                Logger.getErrorLogger().log("Could not find pre-made file '" + archiveName + "' Prehaps an unknown I/O Error occured?!");
                 return;
             }
         
@@ -188,7 +188,7 @@ public class FileUtils
             }
             catch(IOException e)
             {
-                Logger.getErrorLogger().write("Encountered an error while compressing '" + archiveName + "'! Could not add entries to archive!");
+                Logger.getErrorLogger().log("Encountered an error while compressing '" + archiveName + "'! Could not add entries to archive!");
             }
         });
         
@@ -212,7 +212,7 @@ public class FileUtils
         }
         catch(FileNotFoundException e)
         {
-            Logger.getErrorLogger().write("Could not find file '" + file.getName() + "' to decompress!");
+            Logger.getErrorLogger().log("Could not find file '" + file.getName() + "' to decompress!");
         }
         if(in == null) return null;
         
@@ -245,7 +245,7 @@ public class FileUtils
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().write("Could not decompress file '" + file.getName() + "'! Zip Entry error!");
+            Logger.getErrorLogger().log("Could not decompress file '" + file.getName() + "'! Zip Entry error!");
         }
         
         File[] rl = new File[fileList.size()];
@@ -256,87 +256,6 @@ public class FileUtils
         }
         
         return rl;
-    }
-    
-    /**
-     * Convenience Method for a certain developer.
-     * @param filename The path of the file
-     * @return returns the requested file data in the form of a String.
-     * @throws Exception In the case the file could not be read.
-     */
-    public static String readFileAsString(String filename) throws Exception
-    {
-        StringBuilder source = new StringBuilder();
-        FileInputStream in = new FileInputStream(filename);
-        Exception exception = null;
-        BufferedReader reader;
-        
-        try
-        {
-            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            Exception innerExc = null;
-            try
-            {
-                String line;
-                while ((line = reader.readLine()) != null)
-                {
-                    source.append(line).append('\n');
-                }
-            } 
-            catch (Exception exc)
-            {
-                exception = exc;
-            } 
-            finally
-            {
-                try
-                {
-                    reader.close();
-                } 
-                catch (Exception exc)
-                {
-                    if (innerExc == null)
-                    {
-                        innerExc = exc;
-                    } 
-                    else
-                    {
-                        exc.printStackTrace();
-                    }
-                }
-            }
-            if (innerExc != null)
-            {
-                throw innerExc;
-            }
-        } 
-        catch (Exception exc)
-        {
-            exception = exc;
-        } 
-        finally
-        {
-            try
-            {
-                in.close();
-            } 
-            catch (Exception exc)
-            {
-                if (exception == null)
-                {
-                    exception = exc;
-                } 
-                else
-                {
-                    exc.printStackTrace();
-                }
-            }
-            if (exception != null)
-            {
-                throw exception;
-            }
-        }
-        return source.toString();
     }
 
     /**
@@ -356,7 +275,7 @@ public class FileUtils
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().write("Could not write string to file: failed to open stream.");
+            Logger.getErrorLogger().log("Could not write string to file: failed to open stream.");
         }
         
         if(out != null)
@@ -366,7 +285,7 @@ public class FileUtils
         }
         else
         {
-            Logger.getErrorLogger().write("Could not write string to file: stream is null!");
+            Logger.getErrorLogger().log("Could not write string to file: stream is null!");
         }
     }
     
@@ -387,7 +306,7 @@ public class FileUtils
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().write("Could not write strings to file: failed to open stream.");
+            Logger.getErrorLogger().log("Could not write strings to file: failed to open stream.");
         }
         
         if(out != null)
@@ -400,7 +319,7 @@ public class FileUtils
         }
         else
         {
-            Logger.getErrorLogger().write("Could not write strings to file: stream is null!");
+            Logger.getErrorLogger().log("Could not write strings to file: stream is null!");
         }
     }
 }

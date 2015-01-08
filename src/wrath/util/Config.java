@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library  
- *  Copyright (C) 2014  Dark Paradox Games
+ *  Copyright (C) 2014  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import java.util.Iterator;
  * Basic, extendable config system. Creates a simple 'key: value' config file and stores it in a map.
  * Set Properties with the setProperty(String, String) method and use any get() method to retrieve them.
  * All error handling and parsing is done here as well.
- * @author Epictaco
+ * @author Trent Spears
  */
 public class Config 
 {
@@ -60,7 +60,7 @@ public class Config
             }
             catch(IOException e)
             {
-                Logger.getErrorLogger().write("Could not create mew file for config '" + configName + "'!");
+                Logger.getErrorLogger().log("Could not create mew file for config '" + configName + "'!");
             }
         }
         else
@@ -78,7 +78,7 @@ public class Config
             }
             catch(IOException e)
             {
-                Logger.getErrorLogger().write("Could not read from config file '" + configName + "'!");
+                Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
             }
         }
     }
@@ -164,7 +164,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().write("Could not read double '" + f + "' in getDoubleArray()!");
+                Logger.getErrorLogger().log("Could not read double '" + f + "' in getDoubleArray()!");
             }
         }
         
@@ -198,7 +198,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().write("Could not read double '" + f + "' in getDoubleArray()!");
+                Logger.getErrorLogger().log("Could not read double '" + f + "' in getDoubleArray()!");
             }
         }
         
@@ -268,7 +268,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().write("Could not read float '" + f + "' in getFloatArray()!");
+                Logger.getErrorLogger().log("Could not read float '" + f + "' in getFloatArray()!");
             }
         }
         
@@ -302,7 +302,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().write("Could not read float '" + f + "' in getFloatArray()!");
+                Logger.getErrorLogger().log("Could not read float '" + f + "' in getFloatArray()!");
             }
         }
         
@@ -372,7 +372,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().write("Could not read int '" + f + "' in getIntArray()!");
+                Logger.getErrorLogger().log("Could not read int '" + f + "' in getIntArray()!");
             }
         }
         
@@ -406,7 +406,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().write("Could not read int '" + f + "' in getIntArray()!");
+                Logger.getErrorLogger().log("Could not read int '" + f + "' in getIntArray()!");
                 return defaultValue;
             }
         }
@@ -512,7 +512,7 @@ public class Config
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().write("Could not read from config file '" + configName + "'!");
+            Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
         }
     }
     
@@ -542,7 +542,7 @@ public class Config
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().write("Could not interpret config file '" + configName + "'!");
+            Logger.getErrorLogger().log("Could not interpret config file '" + configName + "'!");
         }
     }
 }

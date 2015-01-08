@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library 
- *  Copyright (C) 2014  Dark Paradox Games
+ *  Copyright (C) 2014  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import java.util.Calendar;
 
 /**
  * Flexible and expandable logging system. Includes Time stamps, console verbose and file logging.
- * @author Epictaco
+ * @author Trent Spears
  */
 public class Logger 
 {
@@ -51,6 +51,15 @@ public class Logger
     private PrintWriter out;
     private boolean verboseToConsole = true;
     private boolean writeToFile = true;
+    
+	/**
+     * The name of the logger. The file will be (root)/logs/(name).log
+     * @param loggerName The name of the Logger
+     */
+    public Logger(String loggerName)
+    {
+        this(loggerName, true, true);
+    }
     
     /**
      * The name of the logger. The file will be (root)/logs/(name).log
@@ -78,7 +87,7 @@ public class Logger
                 catch(IOException e)
                 {
                     if(loggerName.equals("ERROR")) System.out.println("Could not create standard ERROR logger!");
-                    else errLogger.write("Could not create file for logger '" + loggerName + "'!");
+                    else errLogger.log("Could not create file for logger '" + loggerName + "'!");
                 }
             }
         }
@@ -100,7 +109,7 @@ public class Logger
      * Timestamping and prefixing will be done automatically.
      * @param message The message to write.
      */
-    public void write(String message)
+    public void log(String message)
     {
         if(closed) return;
         if(!verboseToConsole && !writeToFile) return;
@@ -119,7 +128,7 @@ public class Logger
                 catch(IOException e)
                 {
                     writeToFile = false;
-                    write("Cannot write to log file! Could not bind stream writer!");
+                    log("Cannot write to log file! Could not bind stream writer!");
                 }
             }
             

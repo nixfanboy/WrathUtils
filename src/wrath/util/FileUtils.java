@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library  
- *  Copyright (C) 2014  Trent Spears
+ *  Copyright (C) 2015  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,14 +18,12 @@
 
 package wrath.util;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;

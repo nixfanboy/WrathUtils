@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library  
- *  Copyright (C) 2014  Trent Spears
+ *  Copyright (C) 2015  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

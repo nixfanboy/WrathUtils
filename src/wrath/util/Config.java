@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library  
- *  Copyright (C) 2014  Trent Spears
+ *  Copyright (C) 2015  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Basic, extendable config system. Creates a simple 'key: value' config file and stores it in a map.
+ * Basic, extendable configuration system. Creates a simple 'key: value' config file and stores it in a map.
  * Set Properties with the setProperty(String, String) method and use any get() method to retrieve them.
  * All error handling and parsing is done here as well.
  * @author Trent Spears
@@ -41,13 +41,23 @@ public class Config
     private final HashMap<String, String> map = new HashMap<>();
     
     /**
-     * The name of the config. The file will be (root)/configs/(name).cfg
-     * @param configName The name of the configuration
+     * Config constructor. The file will be (root)/etc/configs/(name).cfg
+     * @param configName The name of the configuration instance.
      */
     public Config(String configName)
     {
+        this(configName, new File("etc/configs/" + configName + ".cfg"));
+    }
+    
+    /**
+     * Config constructor. The file will be (root)/etc/configs/(name).cfg
+     * @param configName The name of the configuration instance.
+     * @param configFile Custom file location of the configuration.
+     */
+    public Config(String configName, File configFile)
+    {
         this.configName = configName;
-        configFile = new File("etc/configs/" + configName + ".cfg");
+        this.configFile = configFile;
         
         File dir = new File("etc/configs");
         if(!dir.exists()) dir.mkdirs();

@@ -1,6 +1,6 @@
 /**
  *  Wrath Engine Utility Library 
- *  Copyright (C) 2014  Trent Spears
+ *  Copyright (C) 2015  Trent Spears
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,8 +52,8 @@ public class Logger
     private boolean verboseToConsole = true;
     private boolean writeToFile = true;
     
-	/**
-     * The name of the logger. The file will be (root)/logs/(name).log
+    /**
+     * The name of the logger. The file will be (root)/etc/logs/(name).log
      * @param loggerName The name of the Logger
      */
     public Logger(String loggerName)
@@ -62,7 +62,7 @@ public class Logger
     }
     
     /**
-     * The name of the logger. The file will be (root)/logs/(name).log
+     * The name of the logger. The file will be (root)/etc/logs/(name).log
      * @param loggerName The name of the Logger
      * @param verboseToConsole specifies whether this logger writes to console.
      * @param writeToFile specifies whether this logger writes out to a file.

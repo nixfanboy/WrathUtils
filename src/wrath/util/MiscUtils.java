@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javax.swing.JOptionPane;
 
 /**
  * A collection of assorted utilities.
@@ -30,6 +31,8 @@ import java.io.Serializable;
  */
 public class MiscUtils
 {
+    public static enum PopupMessageType{ERROR, INFO, PLAIN, QUESTION, WARNING;}
+    
     /**
      * Static library, objects are unnecessary.
      */
@@ -73,6 +76,26 @@ public class MiscUtils
         catch(IOException e){}
         
         return ret;
+    }
+    
+    /**
+     * Displays a pop-up message.
+     * @param popupTitle The title of the pop-up message.
+     * @param message The message displayed on the pop-up.
+     * @param type The type of message to display. Changes the icon.
+     */
+    public static void displayPopupMessage(String popupTitle, String message, PopupMessageType type)
+    {
+        int opt = JOptionPane.INFORMATION_MESSAGE;
+        
+        if(type == null) opt = JOptionPane.PLAIN_MESSAGE;    
+        else if(type == PopupMessageType.ERROR) opt = JOptionPane.ERROR_MESSAGE;
+        else if(type == PopupMessageType.INFO) opt = JOptionPane.INFORMATION_MESSAGE;
+        else if(type == PopupMessageType.PLAIN) opt = JOptionPane.PLAIN_MESSAGE;
+        else if(type == PopupMessageType.QUESTION) opt = JOptionPane.QUESTION_MESSAGE;
+        else if(type == PopupMessageType.WARNING) opt = JOptionPane.WARNING_MESSAGE;
+        
+        JOptionPane.showMessageDialog(null, message, popupTitle, opt);
     }
     
     /**

@@ -17,12 +17,14 @@
  */
 package wrath.util;
 
+import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URI;
 import javax.swing.JOptionPane;
 
 /**
@@ -99,6 +101,33 @@ public class MiscUtils
     }
     
     /**
+     * Opens the URL in the System's default web browser.
+     * @param url The URL in the form of a String.
+     */
+    public static void openUrlInBrowser(String url)
+    {   
+        if(Desktop.isDesktopSupported())
+        {
+            Desktop desktop = Desktop.getDesktop();
+            if(desktop.isSupported(Desktop.Action.BROWSE))
+            {
+                try 
+                {
+                    desktop.browse(URI.create(url));
+                }
+                catch(IOException e)
+                {
+                    Logger.getErrorLogger().log("Could not open URL '" + url + "' in browser! URL may not be valid!");
+                }
+            }
+            else
+            {
+                Logger.getErrorLogger().log("Could not open URL '" + url + "' in browser! Action not supported!");
+            }
+        }
+    }
+    
+    /**
      * Compiles a {@link java.io.Serializable} object into a Byte Array.
      * @param object The {@link java.lang.Object} to convert into a Byte Array.
      * @return Returns the Byte Array form of the {@link java.io.Serializable}.
@@ -131,5 +160,16 @@ public class MiscUtils
         }
         
         return bao.toByteArray();
+    }
+       
+    /**
+     * Displays an error message in modal form, and closes the program if fatal.
+     * @param message The message to display to the user.
+     * @param fatal Determines whether or not the error is fatal, if fatal the program will close.
+     */
+    public static void throwInternalError(String message, boolean fatal)
+    {
+        JOptionPane.showMessageDialog(null, message, "!! INTERNAL ERROR !!", JOptionPane.ERROR_MESSAGE);
+        if(fatal) System.exit(0);
     }
 }

@@ -84,50 +84,6 @@ public class Config
     }
     
     /**
-     * Config constructor. The file will be (root)/etc/configs/(name).cfg
-     * @param configName The name of the configuration instance.
-     * @param configFile Custom file location of the configuration.
-     */
-    public Config(String configName, File configFile)
-    {
-        this.configName = configName;
-        this.configFile = configFile;
-        
-        File dir = new File("etc/configs");
-        if(!dir.exists()) dir.mkdirs();
-        
-        if(!configFile.exists())
-        {
-            try
-            {
-                configFile.createNewFile();
-            }
-            catch(IOException e)
-            {
-                Logger.getErrorLogger().log("Could not create mew file for config '" + configName + "'!");
-            }
-        }
-        else
-        {
-            try (BufferedReader in = new BufferedReader(new FileReader(configFile)))
-            {
-                String current;
-                while((current = in.readLine()) != null)
-                {
-                    if(current.startsWith("#")) continue;
-                    String[] buf = current.split(": ", 2);
-                    if(buf.length <= 1) continue;
-                    map.put(buf[0], buf[1]);
-                }
-            }
-            catch(IOException e)
-            {
-                Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
-            }
-        }
-    }
-    
-    /**
      * Returns a property corresponding to the key as a boolean.
      * @param key The key of the configuration value to query
      * @return The value of the key. Returns false by default.

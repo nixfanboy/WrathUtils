@@ -105,6 +105,15 @@ public class Logger
     }
     
     /**
+     * Returns true if the logger has been closed and can no longer be accessed, otherwise false.
+     * @return Returns whether or not the logger has been closed.
+     */
+    public boolean isClosed()
+    {
+        return closed;
+    }
+    
+    /**
      * To write to the console, depending on Logger options, it will write to console and/or file.
      * Timestamping and prefixing will be done automatically.
      * @param message The message to write.

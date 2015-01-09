@@ -46,7 +46,41 @@ public class Config
      */
     public Config(String configName)
     {
-        this(configName, new File("etc/configs/" + configName + ".cfg"));
+        this.configName = configName;
+        this.configFile = new File("etc/configs/" + configName + ".cfg");
+        
+        File dir = new File("etc/configs");
+        if(!dir.exists()) dir.mkdirs();
+        
+        if(!configFile.exists())
+        {
+            try
+            {
+                configFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                Logger.getErrorLogger().log("Could not create mew file for config '" + configName + "'!");
+            }
+        }
+        else
+        {
+            try (BufferedReader in = new BufferedReader(new FileReader(configFile)))
+            {
+                String current;
+                while((current = in.readLine()) != null)
+                {
+                    if(current.startsWith("#")) continue;
+                    String[] buf = current.split(": ", 2);
+                    if(buf.length <= 1) continue;
+                    map.put(buf[0], buf[1]);
+                }
+            }
+            catch(IOException e)
+            {
+                Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
+            }
+        }
     }
     
     /**

@@ -17,15 +17,12 @@
  */
 package wrath.util;
 
-import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.URI;
-import javax.swing.JOptionPane;
 
 /**
  * A collection of assorted utilities.

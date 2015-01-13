@@ -32,9 +32,7 @@ import javax.swing.JOptionPane;
  * @author Trent Spears
  */
 public class MiscUtils
-{
-    public static enum PopupMessageType{ERROR, INFO, PLAIN, QUESTION, WARNING;}
-    
+{   
     /**
      * Static library, objects are unnecessary.
      */
@@ -81,53 +79,6 @@ public class MiscUtils
     }
     
     /**
-     * Displays a pop-up message.
-     * @param popupTitle The title of the pop-up message.
-     * @param message The message displayed on the pop-up.
-     * @param type The type of message to display. Changes the icon.
-     */
-    public static void displayPopupMessage(String popupTitle, String message, PopupMessageType type)
-    {
-        int opt = JOptionPane.INFORMATION_MESSAGE;
-        
-        if(type == null) opt = JOptionPane.PLAIN_MESSAGE;    
-        else if(type == PopupMessageType.ERROR) opt = JOptionPane.ERROR_MESSAGE;
-        else if(type == PopupMessageType.INFO) opt = JOptionPane.INFORMATION_MESSAGE;
-        else if(type == PopupMessageType.PLAIN) opt = JOptionPane.PLAIN_MESSAGE;
-        else if(type == PopupMessageType.QUESTION) opt = JOptionPane.QUESTION_MESSAGE;
-        else if(type == PopupMessageType.WARNING) opt = JOptionPane.WARNING_MESSAGE;
-        
-        JOptionPane.showMessageDialog(null, message, popupTitle, opt);
-    }
-    
-    /**
-     * Opens the URL in the System's default web browser.
-     * @param url The URL in the form of a String.
-     */
-    public static void openUrlInBrowser(String url)
-    {   
-        if(Desktop.isDesktopSupported())
-        {
-            Desktop desktop = Desktop.getDesktop();
-            if(desktop.isSupported(Desktop.Action.BROWSE))
-            {
-                try 
-                {
-                    desktop.browse(URI.create(url));
-                }
-                catch(IOException e)
-                {
-                    Logger.getErrorLogger().log("Could not open URL '" + url + "' in browser! URL may not be valid!");
-                }
-            }
-            else
-            {
-                Logger.getErrorLogger().log("Could not open URL '" + url + "' in browser! Action not supported!");
-            }
-        }
-    }
-    
-    /**
      * Compiles a {@link java.io.Serializable} object into a Byte Array.
      * @param object The {@link java.lang.Object} to convert into a Byte Array.
      * @return Returns the Byte Array form of the {@link java.io.Serializable}.
@@ -160,16 +111,5 @@ public class MiscUtils
         }
         
         return bao.toByteArray();
-    }
-       
-    /**
-     * Displays an error message in modal form, and closes the program if fatal.
-     * @param message The message to display to the user.
-     * @param fatal Determines whether or not the error is fatal, if fatal the program will close.
-     */
-    public static void throwInternalError(String message, boolean fatal)
-    {
-        JOptionPane.showMessageDialog(null, message, "!! INTERNAL ERROR !!", JOptionPane.ERROR_MESSAGE);
-        if(fatal) System.exit(0);
     }
 }

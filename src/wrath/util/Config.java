@@ -103,7 +103,11 @@ public class Config
      */
     public boolean getBoolean(String key, boolean defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            this.setProperty(key, defaultValue);
+            return defaultValue;
+        }
         
         return Boolean.parseBoolean(map.get(key));
     }
@@ -134,7 +138,12 @@ public class Config
      */
     public double getDouble(String key, double defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            this.setProperty(key, defaultValue);
+            return defaultValue;
+        }
+        
         try
         {
             return Double.parseDouble(map.get(key));
@@ -186,7 +195,14 @@ public class Config
      */
     public double[] getDoubleArray(String key, double[] defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            String str = "";
+            for(double num : defaultValue)
+                str = str + num + ",";
+            this.setProperty(key, str);
+            return defaultValue;
+        }
         
         String[] buf = map.get(key).split(",");
         final ArrayList<Double> buf2 = new ArrayList<>();
@@ -238,7 +254,12 @@ public class Config
      */
     public float getFloat(String key, float defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            this.setProperty(key, defaultValue);
+            return defaultValue;
+        }
+        
         try
         {
             return Float.parseFloat(map.get(key));
@@ -290,7 +311,14 @@ public class Config
      */
     public float[] getFloatArray(String key, float[] defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            String str = "";
+            for(float num : defaultValue)
+                str = str + num + ",";
+            this.setProperty(key, str);
+            return defaultValue;
+        }
         
         String[] buf = map.get(key).split(",");
         final ArrayList<Float> buf2 = new ArrayList<>();
@@ -342,7 +370,12 @@ public class Config
      */
     public int getInt(String key, int defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            this.setProperty(key, defaultValue);
+            return defaultValue;
+        }
+        
         try
         {
             return Integer.parseInt(map.get(key));
@@ -394,7 +427,14 @@ public class Config
      */
     public int[] getIntArray(String key, int[] defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            String str = "";
+            for(int num : defaultValue)
+                str = str + num + ",";
+            this.setProperty(key, str);
+            return defaultValue;
+        }
         
         String[] buf = map.get(key).split(",");
         final ArrayList<Integer> buf2 = new ArrayList<>();
@@ -450,7 +490,11 @@ public class Config
      */
     public String getString(String key, String defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            this.setProperty(key, defaultValue);
+            return defaultValue;
+        }
         
         return map.get(key);
     }
@@ -464,7 +508,7 @@ public class Config
     {
         if(!map.containsKey(key)) return new String[]{};
         
-        return map.get(key).split(", ");
+        return map.get(key).split(",");
     }
     
     /**
@@ -475,9 +519,16 @@ public class Config
      */
     public String[] getStringArray(String key, String[] defaultValue)
     {
-        if(!map.containsKey(key)) return defaultValue;
+        if(!map.containsKey(key))
+        {
+            String str = "";
+            for(String s : defaultValue)
+                str = str + s + ",";
+            this.setProperty(key, str);
+            return defaultValue;
+        }
         
-        return map.get(key).split(", ");
+        return map.get(key).split(",");
     }
     
     /**
@@ -519,11 +570,12 @@ public class Config
     /**
      * Sets a property's value. For other variables (like boolean), just type it in string form. e.g. "false".
      * @param key The key of the configuration value to query
-     * @param value The value to place in the configuration
+     * @param value The value to place in the configuration. This will be formatted to a {@link java.lang.String} using the {@link java.lang.Object#toString()} method.
+     * Note that if the intended value is an array of objects, set the value argument as Config.arrayToConfigValue(value)!
      */
-    public void setProperty(String key, String value)
+    public void setProperty(String key, Object value)
     {
-        map.put(key, value);
+        map.put(key, value.toString());
     }
     
     /**
@@ -544,5 +596,20 @@ public class Config
         {
             Logger.getErrorLogger().log("Could not interpret config file '" + configName + "'!");
         }
+    }
+    
+    
+    /**
+     * Converts an array of Objects to a valid Config property to be used in {@link wrath.util.Config#setProperty(java.lang.String, java.lang.Object) }
+     * @param array The array of objects to convert. Each element will be converted to a string using the {@link java.lang.Object#toString()} method then formatted into a proper configuration array.
+     * @return Returns the Object that has been properly formatted to be used as a value in  {@link wrath.util.Config#setProperty(java.lang.String, java.lang.Object) }.
+     */
+    public static Object arrayToConfigValue(Object[] array)
+    {
+        String str = "";
+        for(Object o : array)
+            str = str + o.toString() + ",";
+        
+        return str;
     }
 }

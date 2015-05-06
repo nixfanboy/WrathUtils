@@ -100,7 +100,7 @@ public class Logger
     {
         if(closed) return;
         closed = true;
-        out.println();
+        if(out != null) out.println();
         if(out != null) out.close();
     }
     

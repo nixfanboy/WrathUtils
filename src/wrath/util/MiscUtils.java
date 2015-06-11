@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 /**
  * A collection of assorted utilities.
@@ -34,6 +38,18 @@ public class MiscUtils
      * Static library, objects are unnecessary.
      */
     private MiscUtils(){}
+    
+    /**
+     * Converts an array of primitive bytes to a {@link java.nio.ByteBuffer}.
+     * @param data The byte array to convert.
+     * @return Returns the {@link java.nio.ByteBuffer} form of the byte array.
+     */
+    public static ByteBuffer byteArrayToByteBuffer(byte[] data)
+    {
+        ByteBuffer ret = ByteBuffer.allocateDirect(data.length).order(ByteOrder.nativeOrder());
+        ret.put(data).flip();
+        return ret;
+    }
     
     /**
      * Decompiles an array of bytes back into the {@link java.lang.Object} format.
@@ -72,6 +88,30 @@ public class MiscUtils
         }
         catch(IOException e){}
         
+        return ret;
+    }
+    
+    /**
+     * Converts an array of primitive floats to a {@link java.nio.FloatBuffer}.
+     * @param data The float array to convert.
+     * @return Returns the {@link java.nio.FloatBuffer} form of the float array.
+     */
+    public static FloatBuffer floatArrayToFloatBuffer(float[] data)
+    {
+        FloatBuffer ret = ByteBuffer.allocateDirect(data.length << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        ret.put(data).flip();
+        return ret;
+    }
+    
+    /**
+     * Converts an array of primitive ints to a {@link java.nio.IntBuffer}.
+     * @param data The int array to convert.
+     * @return Returns the {@link java.nio.IntBuffer} form of the int array.
+     */
+    public static IntBuffer intArrayToIntBuffer(int[] data)
+    {
+        IntBuffer ret = ByteBuffer.allocateDirect(data.length << 2).order(ByteOrder.nativeOrder()).asIntBuffer();
+        ret.put(data).flip();
         return ret;
     }
     

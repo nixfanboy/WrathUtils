@@ -84,6 +84,46 @@ public class Config
     }
     
     /**
+     * Config constructor.
+     * @param configFile The {@link java.io.File} that this Config will be stored in.
+     */
+    public Config(File configFile)
+    {
+        this.configName = configFile.getName();
+        this.configFile = configFile;
+        
+        if(!configFile.exists())
+        {
+            try
+            {
+                configFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                Logger.getErrorLogger().log("Could not create mew file for config '" + configName + "'!");
+            }
+        }
+        else
+        {
+            try (BufferedReader in = new BufferedReader(new FileReader(configFile)))
+            {
+                String current;
+                while((current = in.readLine()) != null)
+                {
+                    if(current.startsWith("#")) continue;
+                    String[] buf = current.split(": ", 2);
+                    if(buf.length <= 1) continue;
+                    map.put(buf[0], buf[1]);
+                }
+            }
+            catch(IOException e)
+            {
+                Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
+            }
+        }
+    }
+    
+    /**
      * Returns a property corresponding to the key as a boolean.
      * @param key The key of the configuration value to query
      * @return The value of the key. Returns false by default.

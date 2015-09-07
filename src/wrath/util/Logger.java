@@ -53,7 +53,7 @@ public class Logger
     private boolean writeToFile = true;
     
     /**
-     * The name of the logger. The file will be (root)/etc/logs/(name).log
+     * Constructor. The file will be (root)/etc/logs/(name).log
      * @param loggerName The name of the Logger
      */
     public Logger(String loggerName)
@@ -62,7 +62,16 @@ public class Logger
     }
     
     /**
-     * The name of the logger. The file will be (root)/etc/logs/(name).log
+     * Constructor.
+     * @param loggerFile The {@link java.io.File} to store the log data.
+     */
+    public Logger(File loggerFile)
+    {
+        this(loggerFile, true, true);
+    }
+    
+    /**
+     * Constructor. The file will be (root)/etc/logs/(name).log
      * @param loggerName The name of the Logger
      * @param verboseToConsole specifies whether this logger writes to console.
      * @param writeToFile specifies whether this logger writes out to a file.
@@ -86,7 +95,36 @@ public class Logger
                 }
                 catch(IOException e)
                 {
-                    if(loggerName.equals("ERROR")) System.out.println("Could not create standard ERROR logger!");
+                    if(loggerName.equals("ERROR")) System.err.println("Could not create standard ERROR logger!");
+                    else errLogger.log("Could not create file for logger '" + loggerName + "'!");
+                }
+            }
+        }
+    }
+    
+    /**
+     * Constructor. The file will be (root)/etc/logs/(name).log
+     * @param loggerFile The {@link java.io.File} to store the log data.
+     * @param verboseToConsole specifies whether this logger writes to console.
+     * @param writeToFile specifies whether this logger writes out to a file.
+     */
+    public Logger(File loggerFile, boolean verboseToConsole, boolean writeToFile)
+    {   
+        this.loggerName = loggerFile.getName();
+        this.verboseToConsole = verboseToConsole;
+        this.loggerFile = loggerFile;
+        
+        if(writeToFile)
+        {
+            if(!loggerFile.exists())
+            {
+                try
+                {
+                    loggerFile.createNewFile();
+                }
+                catch(IOException e)
+                {
+                    if(loggerName.equals("ERROR")) System.err.println("Could not create standard ERROR logger!");
                     else errLogger.log("Could not create file for logger '" + loggerName + "'!");
                 }
             }

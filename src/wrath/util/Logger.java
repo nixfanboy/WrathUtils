@@ -1,26 +1,13 @@
 /**
- *  Wrath Engine Utility Library 
- *  Copyright (C) 2015  Trent Spears
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * The MIT License (MIT)
+ * Wrath Utils Copyright (c) 2015 Trent Spears
  */
-
 package wrath.util;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,156 +17,135 @@ import java.util.Calendar;
  * Flexible and expandable logging system. Includes Time stamps, console verbose and file logging.
  * @author Trent Spears
  */
-public class Logger 
+public class Logger extends PrintStream
 {
-    private static final Logger errLogger = new Logger("error", true, true);
+    public static final PrintStream SYS_ERR = System.err;
+    public static final PrintStream SYS_OUT = System.out;
     private static final DateFormat format = new SimpleDateFormat("[MM/dd/yyyy][HH:mm:ss]");
     private static final Calendar now = Calendar.getInstance();
     
-    /**
-     * Gets the standard output stream/logging object to report errors to console and file.
-     * @return Returns the Standard error logger
-     */
-    public static Logger getErrorLogger()
-    {
-        return errLogger;
-    }
-    
     private boolean closed = false;
-    private final File loggerFile;
-    private final String loggerName;
-    private PrintWriter out;
-    private boolean verboseToConsole = true;
-    private boolean writeToFile = true;
+    private final boolean console;
+    private final boolean file;
+    private final File logFile;
+    private final String name;
+    private PrintWriter fout;
+    private final boolean time;
     
     /**
-     * Constructor. The file will be (root)/etc/logs/(name).log
-     * @param loggerName The name of the Logger
+     * Constructor.
+     * @param logName The name of the logger to display in the console.
+     * @param logFile The {@link java.io.File} to save the log to.
      */
-    public Logger(String loggerName)
+    public Logger(String logName, File logFile)
     {
-        this(loggerName, true, true);
+        this(logName, logFile, true, true, true);
     }
     
     /**
      * Constructor.
-     * @param loggerFile The {@link java.io.File} to store the log data.
+     * @param logName The name of the logger to display in the console.
+     * @param logFile The {@link java.io.File} to save the log to.
+     * @param timeStamp If true, a time stamp and the name of the logger will be displayed before the output is printed.
+     * @param writeToConsole If true, outputs to the console.
+     * @param writeToFile If true, writes to the file.
      */
-    public Logger(File loggerFile)
+    public Logger(String logName, File logFile, boolean timeStamp, boolean writeToConsole, boolean writeToFile)
     {
-        this(loggerFile, true, true);
-    }
-    
-    /**
-     * Constructor. The file will be (root)/etc/logs/(name).log
-     * @param loggerName The name of the Logger
-     * @param verboseToConsole specifies whether this logger writes to console.
-     * @param writeToFile specifies whether this logger writes out to a file.
-     */
-    public Logger(String loggerName, boolean verboseToConsole, boolean writeToFile)
-    {   
-        this.loggerName = loggerName;
-        this.verboseToConsole = verboseToConsole;
-        loggerFile = new File("etc/logs/" + loggerName + ".log");
+        super(SYS_OUT, true);
         
-        if(writeToFile)
+        this.name = logName;
+        this.logFile = logFile;
+        this.console = writeToConsole;
+        this.file = writeToFile;
+        this.time = timeStamp;
+        
+        if(file)
         {
-            File dir = new File("etc/logs");
-            if(!dir.exists()) dir.mkdirs();
-        
-            if(!loggerFile.exists())
-            {
+            if(!logFile.exists())
                 try
                 {
-                    loggerFile.createNewFile();
+                    logFile.createNewFile();
                 }
                 catch(IOException e)
                 {
-                    if(loggerName.equals("ERROR")) System.err.println("Could not create standard ERROR logger!");
-                    else errLogger.log("Could not create file for logger '" + loggerName + "'!");
+                    System.err.println("Could not create new file for logger '" + name + "'! I/O Error!");
                 }
+            
+            try
+            {
+                fout = new PrintWriter(new FileWriter(logFile, true), true);
+            }
+            catch(IOException ex)
+            {
+                System.err.println("Could not log to file for logger '" + name + "'! I/O Error!");
             }
         }
     }
     
     /**
-     * Constructor. The file will be (root)/etc/logs/(name).log
-     * @param loggerFile The {@link java.io.File} to store the log data.
-     * @param verboseToConsole specifies whether this logger writes to console.
-     * @param writeToFile specifies whether this logger writes out to a file.
-     */
-    public Logger(File loggerFile, boolean verboseToConsole, boolean writeToFile)
-    {   
-        this.loggerName = loggerFile.getName();
-        this.verboseToConsole = verboseToConsole;
-        this.loggerFile = loggerFile;
-        
-        if(writeToFile)
-        {
-            if(!loggerFile.exists())
-            {
-                try
-                {
-                    loggerFile.createNewFile();
-                }
-                catch(IOException e)
-                {
-                    if(loggerName.equals("ERROR")) System.err.println("Could not create standard ERROR logger!");
-                    else errLogger.log("Could not create file for logger '" + loggerName + "'!");
-                }
-            }
-        }
-    }
-    
-    /**
-     * Closes the Logger and its output streams.
-     */
-    public void close()
-    {
-        if(closed) return;
-        closed = true;
-        if(out != null) out.println();
-        if(out != null) out.close();
-    }
-    
-    /**
-     * Returns true if the logger has been closed and can no longer be accessed, otherwise false.
-     * @return Returns whether or not the logger has been closed.
+     * If true, the logger is saved and closed, and cannot be written to anymore.
+     * @return Returns true if the logger is closed.
      */
     public boolean isClosed()
     {
         return closed;
     }
     
-    /**
-     * To write to the console, depending on Logger options, it will write to console and/or file.
-     * Timestamping and prefixing will be done automatically.
-     * @param message The message to write.
-     */
-    public void log(String message)
+    @Override
+    public void close()
     {
         if(closed) return;
-        if(!verboseToConsole && !writeToFile) return;
-        
-        String prnt = format.format(now.getTime()) + " " + message;
-        if(verboseToConsole) System.out.println("[" + loggerName.toUpperCase() + "] " + prnt);
-        
-        if(writeToFile)
+        closed = true;
+        if(fout != null) fout.close();
+    }
+    
+    @Override
+    public void print(String string)
+    {
+        String prnt;
+        if(time) prnt = format.format(now.getTime()) + " " + string;
+        else prnt = string;
+        if(console)
         {
-            if(out == null)
-            {
-                try
-                {
-                    out = new PrintWriter(new FileWriter(loggerFile, true), true);
-                }
-                catch(IOException e)
-                {
-                    writeToFile = false;
-                    log("Cannot write to log file! Could not bind stream writer!");
-                }
-            }
-            
-            out.println(prnt);
+            if(time) super.print("[" + name + "]" + prnt);
+            else super.print(prnt);
         }
+        if(file && !closed) fout.print(prnt);
+    }
+    
+    @Override
+    public void println(String string)
+    {
+        String prnt;
+        if(time) prnt = format.format(now.getTime()) + " " + string;
+        else prnt = string;
+        if(console)
+        {
+            if(time) super.println("[" + name + "]" + prnt);
+            else super.println(prnt);
+        }
+        if(file && !closed) fout.println(prnt);
+    }
+    
+    /**
+     * Changes the System's standard output, to replace System.out.
+     * @param logger The {@link wrath.util.Logger} to make the system's standard output. If null, resets the System.out logger back to default.
+     */
+    public static void registerOutputLogger(Logger logger)
+    {
+        if(logger == null) System.setOut(SYS_OUT);
+        System.setOut(logger);
+    }
+    
+    /**
+     * Changes the System's standard error output, to replace System.err.
+     * @param logger The {@link wrath.util.Logger} to make the system's standard error output. If null, resets the System.err logger back to default.
+     */
+    public static void registerErrorLogger(Logger logger)
+    {
+        if(logger == null) System.setErr(SYS_ERR);
+        System.setErr(logger);
     }
 }
+

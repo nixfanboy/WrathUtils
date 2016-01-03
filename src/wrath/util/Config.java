@@ -1,21 +1,7 @@
 /**
- *  Wrath Engine Utility Library  
- *  Copyright (C) 2015  Trent Spears
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * The MIT License (MIT)
+ * Wrath Utils Copyright (c) 2015 Trent Spears
  */
-
 package wrath.util;
 
 import java.io.BufferedReader;
@@ -41,86 +27,15 @@ public class Config
     private final HashMap<String, String> map = new HashMap<>();
     
     /**
-     * Config constructor. The file will be (root)/etc/configs/(name).cfg
-     * @param configName The name of the configuration instance.
-     */
-    public Config(String configName)
-    {
-        this.configName = configName;
-        this.configFile = new File("etc/configs/" + configName + ".cfg");
-        
-        File dir = new File("etc/configs");
-        if(!dir.exists()) dir.mkdirs();
-        
-        if(!configFile.exists())
-        {
-            try
-            {
-                configFile.createNewFile();
-            }
-            catch(IOException e)
-            {
-                Logger.getErrorLogger().log("Could not create mew file for config '" + configName + "'!");
-            }
-        }
-        else
-        {
-            try (BufferedReader in = new BufferedReader(new FileReader(configFile)))
-            {
-                String current;
-                while((current = in.readLine()) != null)
-                {
-                    if(current.startsWith("#")) continue;
-                    String[] buf = current.split(": ", 2);
-                    if(buf.length <= 1) continue;
-                    map.put(buf[0], buf[1]);
-                }
-            }
-            catch(IOException e)
-            {
-                Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
-            }
-        }
-    }
-    
-    /**
-     * Config constructor.
-     * @param configFile The {@link java.io.File} that this Config will be stored in.
+     * Constructor.
+     * @param configFile The {@link java.io.File} that this config will be stored in.
      */
     public Config(File configFile)
     {
         this.configName = configFile.getName();
         this.configFile = configFile;
         
-        if(!configFile.exists())
-        {
-            try
-            {
-                configFile.createNewFile();
-            }
-            catch(IOException e)
-            {
-                Logger.getErrorLogger().log("Could not create mew file for config '" + configName + "'!");
-            }
-        }
-        else
-        {
-            try (BufferedReader in = new BufferedReader(new FileReader(configFile)))
-            {
-                String current;
-                while((current = in.readLine()) != null)
-                {
-                    if(current.startsWith("#")) continue;
-                    String[] buf = current.split(": ", 2);
-                    if(buf.length <= 1) continue;
-                    map.put(buf[0], buf[1]);
-                }
-            }
-            catch(IOException e)
-            {
-                Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
-            }
-        }
+        if(configFile.exists()) load();
     }
     
     /**
@@ -206,23 +121,17 @@ public class Config
         String[] buf = map.get(key).split(",");
         final ArrayList<Double> buf2 = new ArrayList<>();
         for(String f : buf)
-        {
             try
             {
                 buf2.add(Double.parseDouble(f));
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().log("Could not read double '" + f + "' in getDoubleArray()!");
+                System.err.println("Could not read double '" + f + "' in getDoubleArray()!");
             }
-        }
         
         double[] buf3 = new double[buf2.size()];
-        
-        for(int x = 0; x < buf3.length; x++)
-        {
-            buf3[x] = buf2.get(x);
-        }
+        for(int x = 0; x < buf3.length; x++) buf3[x] = buf2.get(x);
         
         return buf3;
     }
@@ -247,23 +156,17 @@ public class Config
         String[] buf = map.get(key).split(",");
         final ArrayList<Double> buf2 = new ArrayList<>();
         for(String f : buf)
-        {
             try
             {
                 buf2.add(Double.parseDouble(f));
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().log("Could not read double '" + f + "' in getDoubleArray()!");
+                System.err.println("Could not read double '" + f + "' in getDoubleArray()!");
             }
-        }
         
         double[] buf3 = new double[buf2.size()];
-        
-        for(int x = 0; x < buf3.length; x++)
-        {
-            buf3[x] = buf2.get(x);
-        }
+        for(int x = 0; x < buf3.length; x++)  buf3[x] = buf2.get(x);
         
         return buf3;
     }
@@ -322,23 +225,16 @@ public class Config
         String[] buf = map.get(key).split(",");
         final ArrayList<Float> buf2 = new ArrayList<>();
         for(String f : buf)
-        {
             try
             {
                 buf2.add(Float.parseFloat(f));
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().log("Could not read float '" + f + "' in getFloatArray()!");
+                System.err.println("Could not read float '" + f + "' in getFloatArray()!");
             }
-        }
-        
         float[] buf3 = new float[buf2.size()];
-        
-        for(int x = 0; x < buf3.length; x++)
-        {
-            buf3[x] = buf2.get(x);
-        }
+        for(int x = 0; x < buf3.length; x++) buf3[x] = buf2.get(x);
         
         return buf3;
     }
@@ -363,23 +259,17 @@ public class Config
         String[] buf = map.get(key).split(",");
         final ArrayList<Float> buf2 = new ArrayList<>();
         for(String f : buf)
-        {
             try
             {
                 buf2.add(Float.parseFloat(f));
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().log("Could not read float '" + f + "' in getFloatArray()!");
+                System.err.println("Could not read float '" + f + "' in getFloatArray()!");
             }
-        }
         
         float[] buf3 = new float[buf2.size()];
-        
-        for(int x = 0; x < buf3.length; x++)
-        {
-            buf3[x] = buf2.get(x);
-        }
+        for(int x = 0; x < buf3.length; x++) buf3[x] = buf2.get(x);
         
         return buf3;
     }
@@ -438,23 +328,17 @@ public class Config
         String[] buf = map.get(key).split(",");
         final ArrayList<Integer> buf2 = new ArrayList<>();
         for(String f : buf)
-        {
             try
             {
                 buf2.add(Integer.parseInt(f));
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().log("Could not read int '" + f + "' in getIntArray()!");
+                System.err.println("Could not read int '" + f + "' in getIntArray()!");
             }
-        }
         
         int[] buf3 = new int[buf2.size()];
-        
-        for(int x = 0; x < buf3.length; x++)
-        {
-            buf3[x] = buf2.get(x);
-        }
+        for(int x = 0; x < buf3.length; x++) buf3[x] = buf2.get(x);
         
         return buf3;
     }
@@ -479,24 +363,18 @@ public class Config
         String[] buf = map.get(key).split(",");
         final ArrayList<Integer> buf2 = new ArrayList<>();
         for(String f : buf)
-        {
             try
             {
                 buf2.add(Integer.parseInt(f));
             }
             catch(NumberFormatException e)
             {
-                Logger.getErrorLogger().log("Could not read int '" + f + "' in getIntArray()!");
+                System.err.println("Could not read int '" + f + "' in getIntArray()!");
                 return defaultValue;
             }
-        }
         
         int[] buf3 = new int[buf2.size()];
-        
-        for(int x = 0; x < buf3.length; x++)
-        {
-            buf3[x] = buf2.get(x);
-        }
+        for(int x = 0; x < buf3.length; x++) buf3[x] = buf2.get(x);
         
         return buf3;
     }
@@ -581,13 +459,8 @@ public class Config
         return map.containsKey(key);
     }
     
-    /**
-     * Clears the config map and reloads the properties from the file
-     */
-    public void reload()
+    private void load()
     {
-        map.clear();
-        
         try(BufferedReader in = new BufferedReader(new FileReader(configFile)))
         {              
             String current;
@@ -603,8 +476,17 @@ public class Config
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().log("Could not read from config file '" + configName + "'!");
+            System.err.println("Could not read from config file '" + configName + "'!");
         }
+    }
+    
+    /**
+     * Clears the config map and reloads the properties from the file
+     */
+    public void reload()
+    {
+        map.clear();
+        load();
     }
     
     /**
@@ -623,6 +505,18 @@ public class Config
      */
     public void save()
     {
+        if(map.isEmpty()) return;
+        
+        if(!configFile.exists())
+            try
+            {
+                configFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                System.err.println("Could not create mew file for config '" + configName + "'!");
+            }
+        
         try(PrintWriter out = new PrintWriter(new FileWriter(configFile, false)))
         {
             map.entrySet().stream().forEach((e) -> 
@@ -634,7 +528,7 @@ public class Config
         }
         catch(IOException e)
         {
-            Logger.getErrorLogger().log("Could not interpret config file '" + configName + "'!");
+            System.err.println("Could not interpret config file '" + configName + "'!");
         }
     }
     

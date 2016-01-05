@@ -28,33 +28,29 @@ public class Logger extends PrintStream
     private final boolean console;
     private final boolean file;
     private final File logFile;
-    private final String name;
     private PrintWriter fout;
     private final boolean time;
     
     /**
      * Constructor.
-     * @param logName The name of the logger to display in the console.
      * @param logFile The {@link java.io.File} to save the log to.
      */
-    public Logger(String logName, File logFile)
+    public Logger(File logFile)
     {
-        this(logName, logFile, true, true, true);
+        this(logFile, true, true, true);
     }
     
     /**
      * Constructor.
-     * @param logName The name of the logger to display in the console.
      * @param logFile The {@link java.io.File} to save the log to.
      * @param timeStamp If true, a time stamp and the name of the logger will be displayed before the output is printed.
      * @param writeToConsole If true, outputs to the console.
      * @param writeToFile If true, writes to the file.
      */
-    public Logger(String logName, File logFile, boolean timeStamp, boolean writeToConsole, boolean writeToFile)
+    public Logger(File logFile, boolean timeStamp, boolean writeToConsole, boolean writeToFile)
     {
         super(SYS_OUT, true);
         
-        this.name = logName;
         this.logFile = logFile;
         this.console = writeToConsole;
         this.file = writeToFile;
@@ -69,7 +65,7 @@ public class Logger extends PrintStream
                 }
                 catch(IOException e)
                 {
-                    System.err.println("Could not create new file for logger '" + name + "'! I/O Error!");
+                    System.err.println("Could not create new file for logger '" + logFile.getName() + "'! I/O Error!");
                 }
             
             try
@@ -78,9 +74,31 @@ public class Logger extends PrintStream
             }
             catch(IOException ex)
             {
-                System.err.println("Could not log to file for logger '" + name + "'! I/O Error!");
+                System.err.println("Could not log to file for logger '" + logFile.getName() + "'! I/O Error!");
             }
         }
+    }
+    
+    /**
+     * Method meant to be overridden. Method takes in original String and returns modified String to be printed.
+     * If method returns null, nothing will be printed to the console.
+     * @param message The original message to be decided whether to print or not.
+     * @return If a String is returned, it is what will be printed to the console. If returns null, nothing is printed.
+     */
+    public String filterConsole(String message)
+    {
+        return message;
+    }
+    
+    /**
+     * Method meant to be overridden. Method takes in original String and returns modified String to be printed.
+     * If method returns null, nothing will be printed to the log file.
+     * @param message The original message to be decided whether to print or not.
+     * @return If a String is returned, it is what will be printed to the log file. If returns null, nothing is printed.
+     */
+    public String filterLog(String message)
+    {
+        return message;
     }
     
     /**
@@ -103,29 +121,32 @@ public class Logger extends PrintStream
     @Override
     public void print(String string)
     {
-        String prnt;
-        if(time) prnt = format.format(now.getTime()) + " " + string;
-        else prnt = string;
         if(console)
         {
-            if(time) super.print("[" + name + "]" + prnt);
-            else super.print(prnt);
+            String prnt = filterConsole(string);
+            if(prnt != null)
+            {
+                if(time) super.print(format.format(now.getTime()) + " " + prnt);
+                else super.print(prnt);
+            }
         }
-        if(file && !closed) fout.print(prnt);
+        
+        if(file && !closed)
+        {
+            String fin = filterLog(string);
+            if(fin != null)
+            {
+                if(fin.endsWith("\n")) fout.println(format.format(now.getTime()) + " " + string);
+                else fout.print(format.format(now.getTime()) + " " + string);
+                fout.flush();
+            }
+        }
     }
     
     @Override
     public void println(String string)
     {
-        String prnt;
-        if(time) prnt = format.format(now.getTime()) + " " + string;
-        else prnt = string;
-        if(console)
-        {
-            if(time) super.println("[" + name + "]" + prnt);
-            else super.println(prnt);
-        }
-        if(file && !closed) fout.println(prnt);
+        print(string + '\n');
     }
     
     /**

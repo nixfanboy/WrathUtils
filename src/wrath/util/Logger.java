@@ -137,7 +137,7 @@ public class Logger extends PrintStream
             if(fin != null)
             {
                 if(fin.endsWith("\n")) fout.println(format.format(now.getTime()) + " " + string);
-                else fout.print(format.format(now.getTime()) + " " + string);
+                else fout.println(format.format(now.getTime()) + " " + string);
                 fout.flush();
             }
         }

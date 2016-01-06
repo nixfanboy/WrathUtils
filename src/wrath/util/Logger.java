@@ -33,6 +33,23 @@ public class Logger extends PrintStream
     
     /**
      * Constructor.
+     */
+    public Logger()
+    {
+        this(null, true, true, false);
+    }
+    
+    /**
+     * Constructor.
+     * @param timeStamp If true, a time stamp and the name of the logger will be displayed before the output is printed.
+     */
+    public Logger(boolean timeStamp)
+    {
+        this(null, timeStamp, true, false);
+    }
+    
+    /**
+     * Constructor.
      * @param logFile The {@link java.io.File} to save the log to.
      */
     public Logger(File logFile)
@@ -53,7 +70,8 @@ public class Logger extends PrintStream
         
         this.logFile = logFile;
         this.console = writeToConsole;
-        this.file = writeToFile;
+        if(logFile == null) file = false;
+        else file = writeToFile;
         this.time = timeStamp;
         
         if(file)
@@ -119,6 +137,102 @@ public class Logger extends PrintStream
     }
     
     @Override
+    public void print(boolean b)
+    {
+        print(b + "");
+    }
+    
+    @Override
+    public void print(char x)
+    {
+        print(x + "");
+    }
+    
+    @Override
+    public void print(char[] chars)
+    {
+        print(new String(chars));
+    }
+    
+    @Override
+    public void print(double d)
+    {
+        print(d + "");
+    }
+    
+    @Override
+    public void print(float f)
+    {
+        print(f + "");
+    }
+    
+    @Override
+    public void print(int i)
+    {
+        print(i + "");
+    }
+    
+    @Override
+    public void print(long l)
+    {
+        print(l + "");
+    }
+    
+    @Override
+    public void print(Object o)
+    {
+        print(o.toString());
+    }
+    
+    @Override
+    public void println(boolean b)
+    {
+        println(b + "");
+    }
+    
+    @Override
+    public void println(char x)
+    {
+        println(x + "");
+    }
+    
+    @Override
+    public void println(char[] chars)
+    {
+        println(new String(chars));
+    }
+    
+    @Override
+    public void println(double d)
+    {
+        println(d + "");
+    }
+    
+    @Override
+    public void println(float f)
+    {
+        println(f + "");
+    }
+    
+    @Override
+    public void println(int i)
+    {
+        println(i + "");
+    }
+    
+    @Override
+    public void println(long l)
+    {
+        println(l + "");
+    }
+    
+    @Override
+    public void println(Object o)
+    {
+        println(o.toString());
+    }
+    
+    @Override
     public void print(String string)
     {
         if(console)
@@ -141,6 +255,33 @@ public class Logger extends PrintStream
                 fout.flush();
             }
         }
+    }
+    
+    @Override
+    public PrintStream printf(String string, Object...args)
+    {
+        if(console)
+        {
+            String prnt = filterConsole(string);
+            if(prnt != null)
+            {
+                if(time) super.printf(format.format(now.getTime()) + " " + prnt, args);
+                else super.printf(prnt, args);
+            }
+        }
+        
+        if(file && !closed)
+        {
+            String fin = filterLog(string);
+            if(fin != null)
+            {
+                if(fin.endsWith("\n")) fout.printf(format.format(now.getTime()) + " " + string, args);
+                else fout.printf(format.format(now.getTime()) + " " + string, args);
+                fout.flush();
+            }
+        }
+        
+        return this;
     }
     
     @Override

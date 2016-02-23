@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * Wrath Utils Copyright (c) 2015 Trent Spears
+ * Wrath Utils Copyright (c) 2016 Trent Spears
  */
 package wrath.util;
 
@@ -22,9 +22,13 @@ import java.util.Iterator;
  */
 public class Config 
 {
-    private final File configFile;
-    private final String configName;
+    private File configFile = null;
     private final HashMap<String, String> map = new HashMap<>();
+    
+    /**
+     * Constructor.
+     */
+    public Config(){}
     
     /**
      * Constructor.
@@ -32,9 +36,7 @@ public class Config
      */
     public Config(File configFile)
     {
-        this.configName = configFile.getName();
         this.configFile = configFile;
-        
         if(configFile.exists()) load();
     }
     
@@ -459,34 +461,51 @@ public class Config
         return map.containsKey(key);
     }
     
-    private void load()
+    /**
+     * Loads the config from file defined in constructor, overrides options if previously set.
+     */
+    public void load()
     {
-        try(BufferedReader in = new BufferedReader(new FileReader(configFile)))
+        if(configFile != null) load(configFile);
+    }
+    
+    /**
+     * Loads the config from specified file, overrides options if previously set.
+     * @param file The {@link java.io.File} to read the config from. 
+     */
+    public void load(File file)
+    {
+        try(BufferedReader in = new BufferedReader(new FileReader(file)))
         {              
             String current;
+            String[] buf;
             while((current = in.readLine()) != null)
-            {
-                if(current.startsWith("#")) continue;
-                String[] buf = current.split(": ", 2);
-                if(buf.length < 1) continue;
-                map.put(buf[0], buf[1]);
-            }
+                if(!current.startsWith("#") && (buf = current.split(":", 2)).length > 1) map.put(buf[0], buf[1]);
                 
             in.close();
         }
         catch(IOException e)
         {
-            System.err.println("Could not read from config file '" + configName + "'!");
+            System.err.println("Could not read from config file '" + file.getName() + "'!");
         }
     }
     
     /**
-     * Clears the config map and reloads the properties from the file
+     * Clears the config map and reloads the properties from the file defined in the constructor.
      */
     public void reload()
     {
+        if(configFile != null) reload(configFile); 
+    }
+    
+    /**
+     * Clears the config map and reloads the properties from the specified file.
+     * @param file The {@link java.io.File} to read the config from.
+     */
+    public void reload(File file)
+    {
         map.clear();
-        load();
+        load(file);
     }
     
     /**
@@ -501,37 +520,81 @@ public class Config
     }
     
     /**
-     * Saves the config currently stored in memory to file. This will override the previous file.
+     * Saves the config currently stored in memory to file defined in constructor.
      */
     public void save()
     {
+        if(configFile != null) save(configFile);
+    }
+    
+    /**
+     * 
+     * @param file 
+     */
+    public void save(File file)
+    {
+        if(file != null) save(file, true);
+    }
+    
+    /**
+     * Saves the config currently stored in memory to specified file.
+     * @param file The {@link java.io.File} to save the config to.
+     * @param force If true, config will save even if it must override the previous file.
+     */
+    public void save(File file, boolean force)
+    {
         if(map.isEmpty()) return;
         
-        if(!configFile.exists())
+        if(!file.exists())
             try
             {
-                configFile.createNewFile();
+                file.createNewFile();
             }
             catch(IOException e)
             {
-                System.err.println("Could not create mew file for config '" + configName + "'!");
+                System.err.println("Could not create new file for config '" + file.getName() + "'!");
             }
         
-        try(PrintWriter out = new PrintWriter(new FileWriter(configFile, false)))
+        ArrayList<String> contents = new ArrayList<>();
+        HashMap<String, String> rplc = new HashMap<>();
+        try(BufferedReader in = new BufferedReader(new FileReader(file)))
         {
-            map.entrySet().stream().forEach((e) -> 
-            {
-                out.println(e.getKey() + ": " + e.getValue());
-            });
+            String s;
+            while((s = in.readLine()) != null)
+                contents.add(s);
             
+            String[] buf;
+            for(String current : contents)
+                if(!current.startsWith("#") && (buf = current.split(":", 2)).length > 1 && map.containsKey(buf[0]) && !map.get(buf[0]).equalsIgnoreCase(buf[1])) rplc.put(buf[0], map.get(buf[0]));
+            
+            in.close();
+        }
+        catch(IOException e)
+        {
+            System.err.print("Could not interpret previous contents of config file '" + file.getName() + "'!");
+            if(!force)
+            {
+                System.err.println(" Save cancelled!");
+                return;
+            }
+            else System.err.println();
+        }
+        
+        try(PrintWriter out = new PrintWriter(new FileWriter(file, false)))
+        {
+            contents.stream().forEach((cur) -> 
+            {
+                String k = cur.split(":")[0]; 
+                if(!cur.startsWith("#") && rplc.containsKey(k)) out.println(k + ": " + rplc.get(k));
+                else out.println(cur);
+            });
             out.close();
         }
         catch(IOException e)
         {
-            System.err.println("Could not interpret config file '" + configName + "'!");
+            System.err.println("Could not save config file '" + file.getName() + "'! I/O Error!");
         }
     }
-    
     
     /**
      * Converts an array of Objects to a valid Config property to be used in {@link wrath.util.Config#setProperty(java.lang.String, java.lang.Object) }

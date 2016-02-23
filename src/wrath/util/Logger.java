@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * Wrath Utils Copyright (c) 2015 Trent Spears
+ * Wrath Utils Copyright (c) 2016 Trent Spears
  */
 package wrath.util;
 

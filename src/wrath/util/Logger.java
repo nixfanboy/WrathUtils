@@ -250,8 +250,7 @@ public class Logger extends PrintStream
             String fin = filterLog(string);
             if(fin != null)
             {
-                if(fin.endsWith("\n")) fout.println(format.format(now.getTime()) + " " + string);
-                else fout.println(format.format(now.getTime()) + " " + string);
+                fout.println(format.format(now.getTime()) + " " + string);
                 fout.flush();
             }
         }

@@ -17,6 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Library to Encrypt and Decrypt byte data.
+ * Uses AES Encryption Algorithm.
  * @author Trent Spears
  */
 public class Encryption
@@ -33,8 +34,9 @@ public class Encryption
     /**
      * Decrypts specified data using specified algorithm and key.
      * @param encryptedData The encrypted data to decrypt.
-     * @param key The security key to decrypt the data, similar to a passphrase.
-     * @return Returns the decrypted data according to specifications. If decryption failed, returned original encrypted data.
+     * @param key The security key to decrypt the data.
+     * @return Returns the decrypted data according to specifications. If decryption failed, returns original encrypted data.
+     * @see #generateKey(java.lang.String, java.lang.String) 
      */
     public static byte[] decryptData(byte[] encryptedData, SecretKeySpec key)
     {
@@ -76,8 +78,9 @@ public class Encryption
     /**
      * Encrypts specified data using specified algorithm and key.
      * @param originalData The data to encrypt.
-     * @param key The security key to encrypt the data, similar to a passphrase.
-     * @return Returns the encrypted data according to specifications. If encryption failed, returned original data.
+     * @param key The security key to encrypt the data.
+     * @return Returns the encrypted data according to specifications. If encryption failed, returns original data.
+     * @see #generateKey(java.lang.String, java.lang.String) 
      */
     public static byte[] encryptData(byte[] originalData, SecretKeySpec key)
     {

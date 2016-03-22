@@ -1,0 +1,4 @@
+/**
+ * The MIT License (MIT)
+ * Wrath Utils Copyright (c) 2016 Trent Spears
+ */

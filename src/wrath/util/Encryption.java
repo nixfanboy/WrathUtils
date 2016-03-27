@@ -42,7 +42,7 @@ public class Encryption
     {
         if(CIPHER == null)
         {
-            try 
+            try
             {
                 CIPHER = Cipher.getInstance(ALGORITHM);
             }

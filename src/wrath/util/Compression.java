@@ -95,7 +95,7 @@ public class Compression
             if(type == CompressionType.DEFLATE) decompressionStream = new InflaterInputStream(src);
             else if(type == CompressionType.GZIP) decompressionStream = new GZIPInputStream(src);
             else return data;
-            byte[] buf = new byte[data.length * 2];
+            byte[] buf = new byte[(int)(decompressionStream.available() * 1.2)];
             int len = decompressionStream.read(buf);
             byte[] ret = new byte[len];
             System.arraycopy(buf, 0, ret, 0, len);
@@ -112,10 +112,13 @@ public class Compression
     /**
      * If true, the specified data is GZIP Compressed.
      * @param data The data to check for the presence of GZIP compression.
-     * @return Returns true if the specified data is compressed with the GZIP format.
+     * @return Returns the format in which the data is compressed. If not compressed, returns null.
      */
-    public static boolean isGZIPCompressed(byte[] data)
+    public static Compression.CompressionType isCompressed(byte[] data)
     {
-        return ((data[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (data[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8)));
+        if(data.length < 2) return null;
+        if((data[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (data[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8))) return Compression.CompressionType.GZIP;
+        else if(data[0] == (byte) 1f && data[1] == (byte) 9d) return Compression.CompressionType.DEFLATE;
+        else return null;
     }
 }

@@ -30,7 +30,6 @@ public class Compression
      */
     private Compression(){}
     
-        
     /**
      * Compresses the specified raw data.
      * @param data The byte data to compress.
@@ -110,13 +109,15 @@ public class Compression
     }
     
     /**
-     * If true, the specified data is GZIP Compressed.
-     * @param data The data to check for the presence of GZIP compression.
+     * Checks to see if the data is compressed and returns the format of compression. Returns null if not compressed.
+     * This method is not 100% CERTAIN, but typically accurate.
+     * @param data The data to check for the presence of compression.
      * @return Returns the format in which the data is compressed. If not compressed, returns null.
      */
     public static Compression.CompressionType isCompressed(byte[] data)
     {
         if(data.length < 2) return null;
+        
         if((data[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (data[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8))) return Compression.CompressionType.GZIP;
         else if(data[0] == (byte) 1f && data[1] == (byte) 9d) return Compression.CompressionType.DEFLATE;
         else return null;

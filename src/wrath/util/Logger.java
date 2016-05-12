@@ -17,17 +17,16 @@ import java.util.Calendar;
  * Flexible and expandable logging system. Includes Time stamps, console verbose and file logging.
  * @author Trent Spears
  */
-public class Logger extends PrintStream
+public class Logger extends PrintStream implements LogFilter
 {
     public static final PrintStream SYS_ERR = System.err;
     public static final PrintStream SYS_OUT = System.out;
-    private static final DateFormat format = new SimpleDateFormat("[MM/dd/yyyy][HH:mm:ss]");
-    private static final Calendar now = Calendar.getInstance();
+    private static final DateFormat FMT = new SimpleDateFormat("[MM/dd/yyyy][HH:mm:ss]");
+    private static final Calendar NOW = Calendar.getInstance();
     
     private boolean closed = false;
     private final boolean console;
-    private final boolean file;
-    private final File logFile;
+    private final LogFilter filter;
     private PrintWriter fout;
     private final boolean time;
     
@@ -36,7 +35,16 @@ public class Logger extends PrintStream
      */
     public Logger()
     {
-        this(null, true, true, false);
+        this(null, null, true, true);
+    }
+    
+    /**
+     * Constructor.
+     * @param filter The {@link wrath.util.LogFilter} to filter console and log messages.
+     */
+    public Logger(LogFilter filter)
+    {
+        this(null, filter, true, true);
     }
     
     /**
@@ -45,37 +53,70 @@ public class Logger extends PrintStream
      */
     public Logger(boolean timeStamp)
     {
-        this(null, timeStamp, true, false);
+        this(null, null, timeStamp, true);
     }
     
     /**
      * Constructor.
-     * @param logFile The {@link java.io.File} to save the log to.
+     * @param filter The {@link wrath.util.LogFilter} to filter console and log messages.
+     * @param timeStamp If true, a time stamp and the name of the logger will be displayed before the output is printed.
+     */
+    public Logger(LogFilter filter, boolean timeStamp)
+    {
+        this(null, filter, timeStamp, true);
+    }
+    
+    /**
+     * Constructor.
+     * @param logFile The {@link java.io.File} to save the log to. Will not write to file if null.
      */
     public Logger(File logFile)
     {
-        this(logFile, true, true, true);
+        this(logFile, null, true, true);
     }
     
     /**
      * Constructor.
-     * @param logFile The {@link java.io.File} to save the log to.
+     * @param logFile The {@link java.io.File} to save the log to. Will not write to file if null.
+     * @param filter The {@link wrath.util.LogFilter} to filter console and log messages.
+     */
+    public Logger(File logFile, LogFilter filter)
+    {
+        this(logFile, filter, true, true);
+    }
+    
+    /**
+     * Constructor.
+     * @param logFile The {@link java.io.File} to save the log to. Will not write to file if null.
+     * @param filter The {@link wrath.util.LogFilter} to filter console and log messages.
+     * @param timeStamp If true, a time stamp and the name of the logger will be displayed before the output is printed.
+     */
+    public Logger(File logFile, LogFilter filter, boolean timeStamp)
+    {
+        this(logFile, filter, timeStamp, true);
+    }
+    
+    /**
+     * Constructor.
+     * @param logFile The {@link java.io.File} to save the log to. Will not write to file if null.
+     * @param filter The {@link wrath.util.LogFilter} to filter console and log messages.
      * @param timeStamp If true, a time stamp and the name of the logger will be displayed before the output is printed.
      * @param writeToConsole If true, outputs to the console.
-     * @param writeToFile If true, writes to the file.
      */
-    public Logger(File logFile, boolean timeStamp, boolean writeToConsole, boolean writeToFile)
+    public Logger(File logFile, LogFilter filter, boolean timeStamp, boolean writeToConsole)
     {
         super(SYS_OUT, true);
         
-        this.logFile = logFile;
         this.console = writeToConsole;
-        if(logFile == null) file = false;
-        else file = writeToFile;
         this.time = timeStamp;
         
-        if(file)
+        if(filter != null) this.filter = filter;
+        else this.filter = this;
+        
+        if(logFile != null)
         {
+            if(logFile.getParentFile() != null && !logFile.getParentFile().exists()) logFile.getParentFile().mkdirs();
+            
             if(!logFile.exists())
                 try
                 {
@@ -97,23 +138,21 @@ public class Logger extends PrintStream
         }
     }
     
-    /**
-     * Method meant to be overridden. Method takes in original String and returns modified String to be printed.
-     * If method returns null, nothing will be printed to the console.
-     * @param message The original message to be decided whether to print or not.
-     * @return If a String is returned, it is what will be printed to the console. If returns null, nothing is printed.
-     */
+    @Override
+    public void close()
+    {
+        if(closed) return;
+        closed = true;
+        if(fout != null) fout.close();
+    }
+    
+    @Override
     public String filterConsole(String message)
     {
         return message;
     }
     
-    /**
-     * Method meant to be overridden. Method takes in original String and returns modified String to be printed.
-     * If method returns null, nothing will be printed to the log file.
-     * @param message The original message to be decided whether to print or not.
-     * @return If a String is returned, it is what will be printed to the log file. If returns null, nothing is printed.
-     */
+    @Override
     public String filterLog(String message)
     {
         return message;
@@ -126,14 +165,6 @@ public class Logger extends PrintStream
     public boolean isClosed()
     {
         return closed;
-    }
-    
-    @Override
-    public void close()
-    {
-        if(closed) return;
-        closed = true;
-        if(fout != null) fout.close();
     }
     
     @Override
@@ -237,20 +268,20 @@ public class Logger extends PrintStream
     {
         if(console)
         {
-            String prnt = filterConsole(string);
+            String prnt = filter.filterConsole(string);
             if(prnt != null)
             {
-                if(time) super.print(format.format(now.getTime()) + " " + prnt);
+                if(time) super.print(FMT.format(NOW.getTime()) + " " + prnt);
                 else super.print(prnt);
             }
         }
         
-        if(file && !closed)
+        if(fout != null && !closed)
         {
-            String fin = filterLog(string);
+            String fin = filter.filterLog(string);
             if(fin != null)
             {
-                fout.println(format.format(now.getTime()) + " " + string);
+                fout.println(FMT.format(NOW.getTime()) + " " + string);
                 fout.flush();
             }
         }
@@ -261,25 +292,23 @@ public class Logger extends PrintStream
     {
         if(console)
         {
-            String prnt = filterConsole(string);
+            String prnt = filter.filterConsole(string);
             if(prnt != null)
             {
-                if(time) super.printf(format.format(now.getTime()) + " " + prnt, args);
+                if(time) super.printf(FMT.format(NOW.getTime()) + " " + prnt, args);
                 else super.printf(prnt, args);
             }
         }
         
-        if(file && !closed)
+        if(fout != null && !closed)
         {
-            String fin = filterLog(string);
+            String fin = filter.filterLog(string);
             if(fin != null)
             {
-                if(fin.endsWith("\n")) fout.printf(format.format(now.getTime()) + " " + string, args);
-                else fout.printf(format.format(now.getTime()) + " " + string, args);
+                fout.printf(FMT.format(NOW.getTime()) + " " + string, args);
                 fout.flush();
             }
         }
-        
         return this;
     }
     
@@ -309,4 +338,3 @@ public class Logger extends PrintStream
         System.setErr(logger);
     }
 }
-

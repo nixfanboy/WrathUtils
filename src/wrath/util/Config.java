@@ -37,7 +37,22 @@ public class Config
     public Config(File configFile)
     {
         this.configFile = configFile;
-        if(configFile.exists()) load();
+        if(configFile.exists())
+        {
+            try(BufferedReader in = new BufferedReader(new FileReader(configFile)))
+            {              
+                String current;
+                String[] buf;
+                while((current = in.readLine()) != null)
+                    if(!current.startsWith("#") && !current.startsWith("//") && !current.startsWith(";") && (buf = current.split(":", 2)).length > 1) map.put(buf[0], buf[1]);
+                
+                in.close();
+            }
+            catch(IOException e)
+            {
+                System.err.println("Could not read from config file '" + configFile.getName() + "'!");
+            }
+        }
     }
     
     /**
@@ -480,7 +495,7 @@ public class Config
             String current;
             String[] buf;
             while((current = in.readLine()) != null)
-                if(!current.startsWith("#") && (buf = current.split(":", 2)).length > 1) map.put(buf[0], buf[1]);
+                if(!current.startsWith("#") && !current.startsWith("//") && !current.startsWith(";") && (buf = current.split(":", 2)).length > 1) map.put(buf[0], buf[1]);
                 
             in.close();
         }
@@ -528,8 +543,8 @@ public class Config
     }
     
     /**
-     * 
-     * @param file 
+     * Saves the config to specified file.
+     * @param file The {@link java.io.File} to write the config to.
      */
     public void save(File file)
     {

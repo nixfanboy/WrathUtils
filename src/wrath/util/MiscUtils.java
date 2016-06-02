@@ -55,7 +55,7 @@ public class MiscUtils
         }
         catch(IOException e)
         {
-            System.err.println("Could not bind ObjectInput stream to ByteArray stream!");
+            System.err.println("] ERROR: Could not bind ObjectInput stream to ByteArray stream!");
             return null;
         }
         
@@ -65,7 +65,7 @@ public class MiscUtils
         }
         catch(IOException | ClassNotFoundException e)
         {
-            System.err.println("Could not read Object from ObjectInput stream!");
+            System.err.println("] ERROR: Could not read Object from ObjectInput stream!");
             return null;
         }
         
@@ -118,7 +118,7 @@ public class MiscUtils
         }
         catch(IOException e)
         {
-            System.err.println("Could not bind ObjectOutput stream to ByteArray Stream!");
+            System.err.println("] ERROR: Could not bind ObjectOutput stream to ByteArray Stream!");
             return new byte[0];
         }
         
@@ -130,7 +130,7 @@ public class MiscUtils
         }
         catch(IOException e)
         {
-            System.err.println("Could not write object to ObjectOutput stream!");
+            System.err.println("] ERROR: Could not write object to ObjectOutput stream!");
             return new byte[0];
         }
         

@@ -62,7 +62,7 @@ public class Compression
         }
         catch(IOException e)
         {
-            System.err.println("Could not compress data in " + type.toString() + " format! I/O Error!");
+            System.err.println("] ERROR: Could not compress data in " + type.toString() + " format! I/O Error!");
         }
         
         return data;
@@ -102,7 +102,7 @@ public class Compression
         }
         catch(IOException e)
         {
-            System.err.println("Could not decompress data in " + type.toString() + " format! I/O Error!");
+            System.err.println("] ERROR: Could not decompress data in " + type.toString() + " format! I/O Error!");
         }
         
         return data;

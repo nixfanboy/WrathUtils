@@ -56,7 +56,7 @@ public class Encryptor
         }
         catch(NoSuchAlgorithmException | NoSuchPaddingException ex)
         {
-            System.err.println("] ERROR: " + alg + " algorithm not supported!");
+            System.err.println("] ERROR: ] ERROR: " + alg + " algorithm not supported!");
         }
     }
     
@@ -72,7 +72,7 @@ public class Encryptor
         }
         catch(DestroyFailedException ex)
         {
-            System.err.println("] ERROR: Key destroy failed! If on secure system, killing process is recommended.");
+            System.err.println("] ERROR: ] ERROR: Key destroy failed! If on secure system, killing process is recommended.");
         }
     }
     
@@ -85,7 +85,7 @@ public class Encryptor
     {
         if(key.isDestroyed())
         {
-            System.err.println("] ERROR: Tried to decrypt data with destroyed key.");
+            System.err.println("] ERROR: ] ERROR: Tried to decrypt data with destroyed key.");
             return encryptedData;
         }
         
@@ -96,11 +96,11 @@ public class Encryptor
         } 
         catch (InvalidKeyException ex) 
         {
-            System.err.println("] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
+            System.err.println("] ERROR: ] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
         } 
         catch (IllegalBlockSizeException | BadPaddingException ex) 
         {
-            System.err.println("] ERROR: Invalid Padding or Block Size!");
+            System.err.println("] ERROR: ] ERROR: Invalid Padding or Block Size!");
         }
         return encryptedData;
     }
@@ -116,7 +116,7 @@ public class Encryptor
     {
         if(key.isDestroyed())
         {
-            System.err.println("] ERROR: Tried to decrypt data with destroyed key.");
+            System.err.println("] ERROR: ] ERROR: Tried to decrypt data with destroyed key.");
             return encryptedData;
         }
         
@@ -127,12 +127,12 @@ public class Encryptor
         }
         catch(NoSuchAlgorithmException | NoSuchPaddingException ex) 
         {
-            System.err.println("] ERROR: " + STATIC_ALGORITHM + " algorithm not supported!");
+            System.err.println("] ERROR: ] ERROR: " + STATIC_ALGORITHM + " algorithm not supported!");
         }
         
         if(cip == null)
         {
-            System.err.println("] ERROR: CIPHER could not be formed!");
+            System.err.println("] ERROR: ] ERROR: CIPHER could not be formed!");
             return encryptedData;
         }
         
@@ -143,11 +143,11 @@ public class Encryptor
         } 
         catch (InvalidKeyException ex) 
         {
-            System.err.println("] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
+            System.err.println("] ERROR: ] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
         } 
         catch (IllegalBlockSizeException | BadPaddingException ex) 
         {
-            System.err.println("] ERROR: Invalid Padding or Block Size!");
+            System.err.println("] ERROR: ] ERROR: Invalid Padding or Block Size!");
         }
         return encryptedData;
     }
@@ -161,7 +161,7 @@ public class Encryptor
     {
         if(key.isDestroyed())
         {
-            System.err.println("] ERROR: Tried to encrypt data with destroyed key.");
+            System.err.println("] ERROR: ] ERROR: Tried to encrypt data with destroyed key.");
             return originalData;
         }
         
@@ -172,11 +172,11 @@ public class Encryptor
         } 
         catch (InvalidKeyException ex) 
         {
-            System.err.println("] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
+            System.err.println("] ERROR: ] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
         }
         catch (IllegalBlockSizeException | BadPaddingException ex) 
         {
-            System.err.println("] ERROR: Invalid Padding or Block Size!");
+            System.err.println("] ERROR: ] ERROR: Invalid Padding or Block Size!");
         }
         return originalData;
     }
@@ -192,7 +192,7 @@ public class Encryptor
     {
         if(key.isDestroyed())
         {
-            System.err.println("] ERROR: Tried to encrypt data with destroyed key.");
+            System.err.println("] ERROR: ] ERROR: Tried to encrypt data with destroyed key.");
             return originalData;
         }
         
@@ -203,12 +203,12 @@ public class Encryptor
         }
         catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
         {
-            System.err.println("] ERROR: " + STATIC_ALGORITHM + " algorithm not supported!");
+            System.err.println("] ERROR: ] ERROR: " + STATIC_ALGORITHM + " algorithm not supported!");
         }
         
         if(cip == null)
         {
-            System.err.println("] ERROR: CIPHER could not be formed!");
+            System.err.println("] ERROR: ] ERROR: CIPHER could not be formed!");
             return originalData;
         }
         
@@ -219,11 +219,11 @@ public class Encryptor
         } 
         catch (InvalidKeyException ex) 
         {
-            System.err.println("] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
+            System.err.println("] ERROR: ] ERROR: Invalid encryption key! Is JCE Unlimited Strength installed?");
         }
         catch (IllegalBlockSizeException | BadPaddingException ex) 
         {
-            System.err.println("] ERROR: Invalid Padding or Block Size!");
+            System.err.println("] ERROR: ] ERROR: Invalid Padding or Block Size!");
         }
         return originalData;
     }
@@ -254,7 +254,7 @@ public class Encryptor
         } 
         catch (UnsupportedEncodingException ex) 
         {
-            System.err.println("ERROR: System does not support UTF-8?!");
+            System.err.println("] ERROR: ERROR: System does not support UTF-8?!");
         }
         
         return generateKey(key.getBytes(), algorithm);
@@ -286,7 +286,7 @@ public class Encryptor
         } 
         catch (UnsupportedEncodingException ex) 
         {
-            System.err.println("ERROR: System does not support UTF-8?!");
+            System.err.println("] ERROR: ERROR: System does not support UTF-8?!");
         }
         
         return generateKey((salt + key).getBytes(), algorithm);
@@ -346,7 +346,7 @@ public class Encryptor
         }
         catch (NoSuchAlgorithmException ex) 
         {
-            System.err.println("] ERROR: Could not use 256-bit hashing as SHA-256 is not supported!");
+            System.err.println("] ERROR: ] ERROR: Could not use 256-bit hashing as SHA-256 is not supported!");
             try 
             {
                 mdg = MessageDigest.getInstance("SHA-1");
@@ -355,7 +355,7 @@ public class Encryptor
             }
             catch (NoSuchAlgorithmException ex1) 
             {
-                System.err.println("] ERROR: Could not use 128-bit hashing as SHA-1 is not supported?! Giving up on SHA!");
+                System.err.println("] ERROR: ] ERROR: Could not use 128-bit hashing as SHA-1 is not supported?! Giving up on SHA!");
                 try
                 {
                     mdg = MessageDigest.getInstance("MD5");
@@ -364,7 +364,7 @@ public class Encryptor
                 }
                 catch (NoSuchAlgorithmException ex2)
                 {
-                    System.err.println("] ERROR: Could not use 128-bit hashing as MD5 is not supported?! Giving up on HASHING!");
+                    System.err.println("] ERROR: ] ERROR: Could not use 128-bit hashing as MD5 is not supported?! Giving up on HASHING!");
                 }
             }
         }

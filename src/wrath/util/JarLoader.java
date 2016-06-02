@@ -41,11 +41,11 @@ public class JarLoader
         }
         catch(ClassNotFoundException e)
         {
-            System.err.println("Could not read class '" + classPath+ "' from Jar file '" + jarFile.getAbsolutePath() + "'!");
+            System.err.println("] ERROR: Could not read class '" + classPath+ "' from Jar file '" + jarFile.getAbsolutePath() + "'!");
         }
         catch(MalformedURLException ex) 
         {
-            System.err.println("Could not read Jar file '" + jarFile.getAbsolutePath() + "'!");
+            System.err.println("] ERROR: Could not read Jar file '" + jarFile.getAbsolutePath() + "'!");
         }
         return ret;
     }
@@ -59,7 +59,7 @@ public class JarLoader
     {
         if(!pluginsDir.exists() || !pluginsDir.isDirectory())
         {
-            System.err.println("Could not load jars from directory '" + pluginsDir.getAbsolutePath() + "', directory does not exist!");
+            System.err.println("] ERROR: Could not load jars from directory '" + pluginsDir.getAbsolutePath() + "', directory does not exist!");
             return new Object[0];
         }
         
@@ -78,7 +78,7 @@ public class JarLoader
                 }
                 catch(IOException e)
                 {
-                    System.err.println("Could not load jar '" + f.getAbsolutePath() + "'! I/O Error!");
+                    System.err.println("] ERROR: Could not load jar '" + f.getAbsolutePath() + "'! I/O Error!");
                 }
             }
         
@@ -102,11 +102,11 @@ public class JarLoader
         }
         catch(MalformedURLException e)
         {
-            System.err.println("Could not load jar plugin '" + jarFile.getName() + "'! File 'init' was not found!");
+            System.err.println("] ERROR: Could not load jar plugin '" + jarFile.getName() + "'! File 'init' was not found!");
         }
         catch(IOException e)
         {
-            System.err.println("Could not load jar plugin '" + jarFile.getName() + "'! I/O Error!");
+            System.err.println("] ERROR: Could not load jar plugin '" + jarFile.getName() + "'! I/O Error!");
         }
         
         return null;
@@ -129,7 +129,7 @@ public class JarLoader
         }
         catch(NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
-            System.err.println("Could not read class '" + classPath+ "' from Jar file '" + jarFile.getAbsolutePath() + "'!\n"
+            System.err.println("] ERROR: Could not read class '" + classPath+ "' from Jar file '" + jarFile.getAbsolutePath() + "'!\n"
                     + "    No public, empty constructor present!");
         }
         return ret;

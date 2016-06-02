@@ -50,7 +50,7 @@ public class Config
             }
             catch(IOException e)
             {
-                System.err.println("Could not read from config file '" + configFile.getName() + "'!");
+                System.err.println("] ERROR: Could not read from config file '" + configFile.getName() + "'!");
             }
         }
     }
@@ -144,7 +144,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                System.err.println("Could not read double '" + f + "' in getDoubleArray()!");
+                System.err.println("] ERROR: Could not read double '" + f + "' in getDoubleArray()!");
             }
         
         double[] buf3 = new double[buf2.size()];
@@ -179,7 +179,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                System.err.println("Could not read double '" + f + "' in getDoubleArray()!");
+                System.err.println("] ERROR: Could not read double '" + f + "' in getDoubleArray()!");
             }
         
         double[] buf3 = new double[buf2.size()];
@@ -248,7 +248,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                System.err.println("Could not read float '" + f + "' in getFloatArray()!");
+                System.err.println("] ERROR: Could not read float '" + f + "' in getFloatArray()!");
             }
         float[] buf3 = new float[buf2.size()];
         for(int x = 0; x < buf3.length; x++) buf3[x] = buf2.get(x);
@@ -282,7 +282,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                System.err.println("Could not read float '" + f + "' in getFloatArray()!");
+                System.err.println("] ERROR: Could not read float '" + f + "' in getFloatArray()!");
             }
         
         float[] buf3 = new float[buf2.size()];
@@ -351,7 +351,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                System.err.println("Could not read int '" + f + "' in getIntArray()!");
+                System.err.println("] ERROR: Could not read int '" + f + "' in getIntArray()!");
             }
         
         int[] buf3 = new int[buf2.size()];
@@ -386,7 +386,7 @@ public class Config
             }
             catch(NumberFormatException e)
             {
-                System.err.println("Could not read int '" + f + "' in getIntArray()!");
+                System.err.println("] ERROR: Could not read int '" + f + "' in getIntArray()!");
                 return defaultValue;
             }
         
@@ -501,7 +501,7 @@ public class Config
         }
         catch(IOException e)
         {
-            System.err.println("Could not read from config file '" + file.getName() + "'!");
+            System.err.println("] ERROR: Could not read from config file '" + file.getName() + "'!");
         }
     }
     
@@ -567,7 +567,7 @@ public class Config
             }
             catch(IOException e)
             {
-                System.err.println("Could not create new file for config '" + file.getName() + "'!");
+                System.err.println("] ERROR: Could not create new file for config '" + file.getName() + "'!");
             }
         
         ArrayList<String> contents = new ArrayList<>();
@@ -586,10 +586,10 @@ public class Config
         }
         catch(IOException e)
         {
-            System.err.print("Could not interpret previous contents of config file '" + file.getName() + "'!");
+            System.err.print("] ERROR: Could not interpret previous contents of config file '" + file.getName() + "'!");
             if(!force)
             {
-                System.err.println(" Save cancelled!");
+                System.err.println("] ERROR: Save cancelled!");
                 return;
             }
             else System.err.println();
@@ -607,7 +607,7 @@ public class Config
         }
         catch(IOException e)
         {
-            System.err.println("Could not save config file '" + file.getName() + "'! I/O Error!");
+            System.err.println("] ERROR: Could not save config file '" + file.getName() + "'! I/O Error!");
         }
     }
     

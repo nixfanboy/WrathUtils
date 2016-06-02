@@ -124,7 +124,7 @@ public class Logger extends PrintStream implements LogFilter
                 }
                 catch(IOException e)
                 {
-                    System.err.println("Could not create new file for logger '" + logFile.getName() + "'! I/O Error!");
+                    System.err.println("] ERROR: Could not create new file for logger '" + logFile.getName() + "'! I/O Error!");
                 }
             
             try
@@ -133,7 +133,7 @@ public class Logger extends PrintStream implements LogFilter
             }
             catch(IOException ex)
             {
-                System.err.println("Could not log to file for logger '" + logFile.getName() + "'! I/O Error!");
+                System.err.println("] ERROR: Could not log to file for logger '" + logFile.getName() + "'! I/O Error!");
             }
         }
     }
